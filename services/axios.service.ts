@@ -1,0 +1,120 @@
+import axios from "axios";
+
+export const fetchTrendingMovies = async () => {
+    try {
+        const resp = await axios.get('https://api.themoviedb.org/3/trending/movie/day?language=en-US&sort_by=release_date&sort_order=desc&api_key=4e4bc47055e1031e55167e2121a053ac');
+        //console.log('trending',resp.data);
+        //setTrendingMovies(resp.data.results);
+        return resp.data;
+     } catch (error) {
+        console.log(error)
+     }
+
+}
+
+  export const fetchPopularPeoples =async (page = 1) => {
+   try {
+      const resp = await axios.get('https://api.themoviedb.org/3/person/popular?language=en-US&page=1&api_key=4e4bc47055e1031e55167e2121a053ac&page='+page); 
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+  }
+
+  export const fetchGenreMoviesList =async () => {
+   try {
+      const resp = await axios.get('https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=4e4bc47055e1031e55167e2121a053ac'); 
+      //console.log(resp.data);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+  }
+
+  export const fetchMoviesDataBySearch = async( props: any) => {  
+   const { genreId, searchKeyword, sortFiltervalue, page}  = props;
+   let url = 'https://api.themoviedb.org/3/discover/movie?api_key=4e4bc47055e1031e55167e2121a053ac&include_adult=false';
+    url += genreId && genreId > 0 ? '&with_genres=' + genreId : '';
+    url += searchKeyword && searchKeyword != '' ? '&with_keywords=' + searchKeyword : '';
+    url += sortFiltervalue && sortFiltervalue != '' ? '&sort_by=' + sortFiltervalue : '';
+    url += page ? '&page=' + (page+1) : 1;
+    console.log(url, 'url');
+   try {
+      const resp = await axios.get(url);
+      //console.log(resp);      
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+}
+
+export const fetchMoviesByParamsData = async(props: any) => {     
+   let fetchType = props.fetchType;
+   fetchType = fetchType ? fetchType : 'popular';
+   let loaddatapage = props.loaddatapage; 
+   loaddatapage = loaddatapage ?  loaddatapage: 1;
+   try { 
+      const resp = await axios.get('https://api.themoviedb.org/3/movie/'+fetchType+'?api_key=4e4bc47055e1031e55167e2121a053ac&language=en-US&page='+loaddatapage);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+}
+
+/* export const fetchPopularMovies = async(page = 1) => {    
+   try {
+      const resp = await axios.get('https://api.themoviedb.org/3/movie/popular?api_key=4e4bc47055e1031e55167e2121a053ac&page='+page);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+}
+
+export const fetchTopRatedMovies = async(page = 1) => {    
+   try {
+      const resp = await axios.get('https://api.themoviedb.org/3/movie/top_rated?api_key=4e4bc47055e1031e55167e2121a053ac&language=en-US&page='+page);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+}
+
+export const fetchUpcomingdMovies = async(page = 1) => {    
+   try {
+      const resp = await axios.get('https://api.themoviedb.org/3/movie/upcoming?api_key=4e4bc47055e1031e55167e2121a053ac&language=en-US&page='+page);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+}
+
+export const fetchNowPlayingMovies = async(page = 1) => {    
+   try { 
+      const resp = await axios.get('https://api.themoviedb.org/3/movie/now_playing?api_key=4e4bc47055e1031e55167e2121a053ac&language=en-US&page='+page);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+   }
+} */
+

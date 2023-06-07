@@ -1,4 +1,73 @@
-:root {
+*{
+  padding: 0px;
+  margin: 0px;
+}
+.body{
+  font-size: 14px;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-style: normal;
+}
+a{
+  text-decoration: none !important;
+  color: black;
+}
+.navbarmenu{
+  font-size: 14px;
+  font-weight: bold;
+  color: whitesmoke;
+}
+.logo{
+  color: whitesmoke;
+  font-size: 18px;
+  
+}
+.heroimageparent{
+  position: relative;
+}
+.heroimage {
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+}
+.heroimgserchbox{
+  position: absolute;
+    bottom: 15%;
+    left: 10%;
+    color: white;
+    background: transparent;
+    width: 80%;
+}
+.searchbox input{
+  border-radius: 10px;
+  color: gray;
+  width: 80%;
+  border: none;
+  padding: 10px;
+}
+.searchbox button{
+  border-radius: 10px;
+  color: white;
+  width: 15%;
+  margin-left: -5%;
+  border: none;
+  padding: 10px;
+  color: gray;
+}
+.searchbox input:focus, .searchbox input:hover, .searchbox input:focus-visible{
+  color: gray;
+  border: none;
+}
+
+.popularmoviespages .text-white, .topratedPages .text-white, .upcomingPages .text-white, .nowPlayingPages .text-white{
+  color: #6c757d !important;
+}
+
+.accordion-button{
+  font-size: 16px;
+  font-weight: bold;
+}
+/* :root {
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
@@ -105,3 +174,4 @@ a {
     color-scheme: dark;
   }
 }
+ */
