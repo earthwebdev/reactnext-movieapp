@@ -99,6 +99,7 @@ const topratedPage = () => {
                       !isLoading && movies && movies.map((movie: any, index: number) => {
                           return <MovieCard
                           key={movie.id} 
+                          id={movie.id}
                           poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
                           title={movie.title}
                           releaseYear={movie.release_date}

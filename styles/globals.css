@@ -11,6 +11,9 @@ a{
   text-decoration: none !important;
   color: black;
 }
+li{
+  list-style: none;
+}
 .navbarmenu{
   font-size: 14px;
   font-weight: bold;

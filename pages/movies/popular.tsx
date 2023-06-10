@@ -1,6 +1,6 @@
 import RootLayouts from '@/components/Layouts';
 import PopularMovies from '@/components/PopularMovies';
-
+import React from 'react';
 import {useState, useEffect } from 'react' 
 import { fetchMoviesByParamsData, fetchMoviesDataBySearch } from '@/services/axios.service';
 //import MoviesCarousel from './components/MovieCard';
@@ -24,16 +24,17 @@ const PopularMoviesPage = () => {
     const [searchKeyword , setSearchKeyword] = useState<string>();
     const [isSearch, setIsSearch] = useState<boolean>(false);
     const [page, setPage] = useState<number>(1);
+
     const searchResults = async(e: any) => {
       e.preventDefault();
       setIsLoading(true);
       setIsSearch(true);
-      console.log(genreId, searchKeyword, sortFiltervalue);
+      //console.log(genreId, searchKeyword, sortFiltervalue);
       const data: any = {
         genreId, searchKeyword, sortFiltervalue, page: 1
       }
       const resp = await fetchMoviesDataBySearch(data);
-          console.log(resp);
+          //console.log(resp);
           setMovies(resp.results);
           setIsLoading(false);
     }
@@ -46,7 +47,7 @@ const PopularMoviesPage = () => {
           genreId, searchKeyword, sortFiltervalue, page
         }
         const resp = await fetchMoviesDataBySearch(data);
-            console.log(resp);
+            //console.log(resp);
             setPage(page + 1);
             setMovies([...movies, ...resp.results]);
       }
@@ -68,6 +69,8 @@ const PopularMoviesPage = () => {
           setMovies(resp.results);
     }
     useEffect(() => {
+      //console.log(`Hello  ${process.env.NODE_ENV} ${process.env.NEXT_PUBLIC_API_KEY}`)
+        
         fetchData();
     }, [])
   return (
@@ -83,7 +86,7 @@ const PopularMoviesPage = () => {
                     <FilterLists setSearchKeyword={setSearchKeyword} searchKeyword={searchKeyword} genreId={genreId} setGenreId={setGenreId} />
                     <Button onClick={(e) => searchResults(e)} className='w-full mt-2 w-100' variant='secondary'>Search</Button>
                 </div>
-                <div className='popularmoviespages row row row-cols-4 col-md-9'>
+                <div className='popularmoviespages row row-cols-4 col-md-9'>
                     {
                         isLoading && (
                                       <div className='position-relative w-100'>
@@ -101,6 +104,7 @@ const PopularMoviesPage = () => {
                       !isLoading && movies && movies.map((movie: any, index: number) => {
                           return <MovieCard
                           key={movie.id} 
+                          id={movie.id}
                           poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
                           title={movie.title}
                           releaseYear={movie.release_date}
