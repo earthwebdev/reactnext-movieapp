@@ -50,7 +50,7 @@ const popularPeoplesPage = () => {
                   {
                       popularPeoples && popularPeoples.map((person: any, index: number) => {
                           return (
-                            <PopularPersonCard key={`person_${index}`} name={person.name} profile_path={'https://image.tmdb.org/t/p/original'+ person.profile_path} known_for={person.known_for} index={index} />                            
+                            <PopularPersonCard key={`person_${person.id}`} id={person.id} name={person.name} profile_path={'https://image.tmdb.org/t/p/original'+ person.profile_path} known_for={person.known_for} index={index} />                            
                           )
                       })
                   }

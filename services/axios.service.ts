@@ -10,6 +10,7 @@ export const fetchTrendingMovies = async () => {
         return resp.data;
      } catch (error) {
         console.log(error)
+        return {error: error};
      }
 
 }
@@ -23,6 +24,7 @@ export const fetchTrendingMovies = async () => {
       //setMovies(resp.data.results);
    } catch (error) {
       console.log(error)
+      return {error: error};
    }
   }
 
@@ -35,6 +37,7 @@ export const fetchTrendingMovies = async () => {
       //setMovies(resp.data.results);
    } catch (error) {
       console.log(error)
+      return {error: error};
    }
   }
 
@@ -53,6 +56,7 @@ export const fetchTrendingMovies = async () => {
       //setMovies(resp.data.results);
    } catch (error) {
       console.log(error)
+      return {error: error};
    }
 }
 
@@ -69,6 +73,7 @@ export const fetchMoviesByParamsData = async(props: any) => {
       //setMovies(resp.data.results);
    } catch (error) {
       console.log(error)
+      return {error: error};
    }
 }
 
@@ -93,8 +98,35 @@ export const fetchMoviesDetailsByParamsData = async(props: any) => {
       //setMovies(resp.data.results);
    } catch (error) {
       console.log(error)
+      return {error: error};
    }
 }
+
+export const fetchPersonsDetailsByParamsData = async(props: any) => {   
+   //console.log(props);  
+   let id = props.id;
+   if(id <= 0){
+      return;
+   }
+   let fetchType = props.fetchType;
+   fetchType = fetchType ?fetchType : '';
+
+   let loaddatapage = props.loaddatapage; 
+   loaddatapage = loaddatapage ?  loaddatapage: 1;
+   try {
+      //console.log(`https://api.themoviedb.org/3/movie/${id}${fetchType}?api_key=${APIKEY}&language=en-US&page=${loaddatapage}`);
+      //const resp = await axios.get('https://api.themoviedb.org/3/movie/'+id+ { fetchType != '' ? '/'+ fetchType:''} +'?api_key='+APIKEY+'&language=en-US&page='+loaddatapage);
+      const resp = await axios.get(`https://api.themoviedb.org/3/person/${id}${fetchType}?api_key=${APIKEY}&language=en-US&page=${loaddatapage}`);
+      //console.log(resp);
+      //dispatch(setStateMovies(resp.data.results));
+      return resp.data;
+      //setMovies(resp.data.results);
+   } catch (error) {
+      console.log(error)
+      return {error: error};
+   }
+}
+
 
 /* export const getMovieDetailsById = async (id: any) => {
    if((!id)){

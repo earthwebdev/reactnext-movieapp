@@ -1,12 +1,16 @@
+import RootLayouts from '@/components/Layouts';
 import Link from 'next/link'
 
-export default function FourOhFour() {
-  return <>
-    <h1>404 - Page Not Found</h1>
-    <Link href="/">
-      <a>
-        Go back home
-      </a>
-    </Link>
-  </>
+const FourOhFourPage = () => {
+  return
+      <RootLayouts>
+        <h1>404 - Page Not Found</h1>
+        <Link href="/">
+         
+            Go back home
+         
+        </Link>
+      </RootLayouts>
 }
+
+export default FourOhFourPage;

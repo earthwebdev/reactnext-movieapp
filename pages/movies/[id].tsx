@@ -44,9 +44,21 @@ const MoviesDetailsPage = () => {
         }
         //const resp: any = await getMovieDetailsById(id);
         const resp = await fetchMoviesDetailsByParamsData(data);
-        //console.log(resp);
-        setMovieDetails(resp);
-
+        console.log(resp);
+        if(resp)
+        {
+            setMovieDetails(resp);
+                fetchCreditDataByID();
+    
+                fetchSocialDataById();
+    
+                fetchRecommendationMoviesById();            
+        }
+        else{
+            router.push('/pagenotfound');
+            return;
+        }
+                           
         
     }
 
@@ -95,14 +107,9 @@ const MoviesDetailsPage = () => {
     
     //console.log(movieDetails?.poster_path);
     useEffect(() => {
-        fetchDataById();
-
-        fetchCreditDataByID();
-
-        fetchSocialDataById();
-
-        fetchRecommendationMoviesById();
-    }, [id]); 
+        fetchDataById();        
+        
+    }, []); 
   return (
     <RootLayouts>
         <div className='container my-2'>
@@ -187,7 +194,7 @@ const MoviesDetailsPage = () => {
                                         movieCreditCrewDetails && movieCreditCrewDetails.map( (movieCreditCrewDetail: any) => {
                                             return (
                                                 
-                                                        <li className="profile">
+                                                        <li key={`crewmovies_${movieCreditCrewDetail.id}`} className="profile">
                                                             <p className="mb-0">
                                                                 <Link className="text-white" href={`/person/${movieCreditCrewDetail.id}`}>{movieCreditCrewDetail.name}</Link>
                                                             </p>
