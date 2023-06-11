@@ -44,14 +44,25 @@ const MoviesDetailsPage = () => {
         }
         //const resp: any = await getMovieDetailsById(id);
         const resp = await fetchMoviesDetailsByParamsData(data);
-        console.log(resp);
+        //console.log(resp);
         if(resp)
         {
+                   
             setMovieDetails(resp);
+
+            setMovieCreditCastDetails( []);
+            setMovieCreditCrewDetails( []); 
                 fetchCreditDataByID();
-    
+
+                const socialdata:any = {};
+                
+                setMovieSocialsData( socialdata);
+                //console.log(movieSocialsData);
                 fetchSocialDataById();
-    
+                //console.log(movieSocialsData);
+                const data:any = [];
+                //console.log(movieRecommendationsData);
+                setMovieRecommendationsData( data );
                 fetchRecommendationMoviesById();            
         }
         else{
@@ -100,8 +111,8 @@ const MoviesDetailsPage = () => {
             id, fetchType: '/recommendations',
         }        
         const resp: any = await fetchMoviesDetailsByParamsData(data);
-        console.log(resp);
-        setMovieRecommendationsData( resp);
+        //console.log(resp.results);
+        setMovieRecommendationsData( resp.results );
         
     }
     
@@ -109,7 +120,7 @@ const MoviesDetailsPage = () => {
     useEffect(() => {
         fetchDataById();        
         
-    }, []); 
+    }, [id]); 
   return (
     <RootLayouts>
         <div className='container my-2'>
@@ -191,10 +202,10 @@ const MoviesDetailsPage = () => {
 
                                 <ol className="people no_image row row-cols-4">
                                     {
-                                        movieCreditCrewDetails && movieCreditCrewDetails.map( (movieCreditCrewDetail: any) => {
+                                        movieCreditCrewDetails && movieCreditCrewDetails.map( (movieCreditCrewDetail: any, index) => {
                                             return (
                                                 
-                                                        <li key={`crewmovies_${movieCreditCrewDetail.id}`} className="profile">
+                                                        <li key={`crewmovies_${movieCreditCrewDetail.id}_${index}`} className="profile">
                                                             <p className="mb-0">
                                                                 <Link className="text-white" href={`/person/${movieCreditCrewDetail.id}`}>{movieCreditCrewDetail.name}</Link>
                                                             </p>
@@ -256,10 +267,32 @@ const MoviesDetailsPage = () => {
                     {
                         movieSocialsData && (
                             <ul className="d-flex flex-cols sociallinks">
-                                <li><Link className="bg-gray me-2 " href={`https://facebook.com/${movieSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link></li>
-                                <li><Link className="bg-gray me-2 " href={`https://twitter.com/${movieSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link></li>
-                                <li><Link className="bg-gray me-2" href={`https://instagram.com/${movieSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link></li>
-                                <li><Link className="bg-gray me-2" href={`${movieDetails?.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link></li>
+                                {
+                                    movieSocialsData && movieSocialsData.facebook_id && (
+                                        <li><Link className="bg-gray me-2 " href={`https://facebook.com/${movieSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link></li>
+                                    )
+                                }
+
+                                {
+                                    movieSocialsData && movieSocialsData.twitter_id && (
+                                        <li><Link className="bg-gray me-2 " href={`https://twitter.com/${movieSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link></li>
+                                    )
+                                }
+                                
+                                {
+                                    movieSocialsData && movieSocialsData.instagram_id && (
+                                        <li><Link className="bg-gray me-2" href={`https://instagram.com/${movieSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link></li>
+                                    )
+                                }
+
+{
+                                    movieDetails && movieDetails.homepage && (
+                                        <li><Link className="bg-gray me-2" href={`${movieDetails?.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link></li>
+                                    )
+                                }
+                                
+                                
+                                
                             </ul>
                         )
                     }
@@ -291,8 +324,9 @@ const MoviesDetailsPage = () => {
             </div>
         </div>
         {
-            movieRecommendationsData && (
-                <RecommendationsMoviesComp recommendationsMovies={movieRecommendationsData} />
+            
+            movieRecommendationsData &&  (
+                <RecommendationsMoviesComp recommendationsMovies={movieRecommendationsData} id={id} />
             )
         }
         

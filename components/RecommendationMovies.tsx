@@ -6,14 +6,15 @@ import { MovieInterface } from '@/interface/movieinterface';
 import MovieCard from './MovieCard';
 
 const RecommendationsMoviesComp = (props: any) => {
-    const {recommendationsMovies} = props;
+  const {recommendationsMovies, id} = props;
+  //console.log(recommendationsMovies)
   const [movies, setMovies] = useState<MovieInterface[]>();
   
   useEffect(() => {
-    if(recommendationsMovies.results.length > 0){
-        setMovies(recommendationsMovies.results);
+    if(recommendationsMovies?.length > 0){
+        setMovies(recommendationsMovies);
       }
-}, [])
+}, [id])
   return (
     <>
     <div className="bg-secondary bg-gradient">

@@ -48,7 +48,15 @@ const PersonDetailsPage = () => {
         if(resp)
         {
             setPersonDetails(resp);
+
+            const socialdata:any = {};
+            setPersonSocialsData(socialdata);
+
             fetchSocialDataById();
+
+            setMovieCreditCastDetails([]);
+            setMovieCreditKnownDetails( []);
+
              fetchCreditDataByID(resp);           
         }
         else{
@@ -94,7 +102,7 @@ const PersonDetailsPage = () => {
     useEffect(() => {
         fetchDataById();        
         
-    }, []); 
+    }, [id]); 
   return (
     <RootLayouts>
         <div className='container my-2'>
