@@ -26,8 +26,7 @@ const PopularMovies = () => {
           <h1 className='text-1xl font-bold mb-4'>Popular Movies</h1>
             <div className='popularmovies row row row-cols-4'>
                   {
-                      movies && movies.map((movie: any, index: number) => {
-                        console.log(movie.id, 'movie id')
+                      movies && movies.map((movie: any, index: number) => {                        
                           return <MovieCard 
                           key={movie.id} 
                           id={movie.id}

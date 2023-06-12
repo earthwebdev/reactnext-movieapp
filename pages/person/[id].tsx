@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { MovieInterface, MovieDetailsInterface, MovieCreditCastDetailsInterface, MovieCreditCrewDetailsInterface, MovieSocialDataInterface } from "@/interface/movieinterface";
 import RootLayouts from "@/components/Layouts";
 import Link  from 'next/link'
-import { Carousel } from "react-bootstrap";
+import { Carousel, Spinner } from "react-bootstrap";
 import { Facebook, Twitter, Instagram, Wikipedia, Link as LinkIcon } from "react-bootstrap-icons";
 import RecommendationsMoviesComp from "@/components/RecommendationMovies";
 import { PersonDetailsInterface, PeopleInterface, PersonSocialDataInterface } from "@/interface/peopleinterface";
 import MovieCard from '@/components/MovieCard'
 
 const PersonDetailsPage = () => {
+    const [isPageLoading, setIsPageLoading] = useState(true);
     const [personDetails, setPersonDetails] = useState<PersonDetailsInterface>();
     const [movieCreditCastDetails, setMovieCreditCastDetails] = useState<MovieCreditCastDetailsInterface[]>([]);
 
@@ -84,7 +85,7 @@ const PersonDetailsPage = () => {
         }
         //const resp: any = await getMovieCreditDetailsById(id);
         const resp: any = await fetchPersonsDetailsByParamsData(data);
-        console.log(resp);
+        //console.log(resp);
         setMovieCreditCastDetails( resp?.cast);
         //const respData = resp;
         let movieCreditsKnownData = [];
@@ -95,7 +96,8 @@ const PersonDetailsPage = () => {
           movieCreditsKnownData.push(resp.cast[ranNum]);
         }
         //console.log(movieCreditsKnownData)       
-        setMovieCreditKnownDetails( movieCreditsKnownData);        
+        setMovieCreditKnownDetails( movieCreditsKnownData);  
+        setIsPageLoading(false);      
     }
     
     //console.log(personDetails?.profile_path);
@@ -105,157 +107,160 @@ const PersonDetailsPage = () => {
     }, [id]); 
   return (
     <RootLayouts>
-        <div className='container my-2'>
-            <div className='row'>
-                <h1 className='text-1xl font-bold mb-4'>Overview Person</h1>
-            </div>
-        </div>
-        
-        <div className="my-2">
-            <div className='container my-2 py-2'>
-            <div className='personDetails row'>
-                <div className='col-md-3'> 
-                  <section className="full_wrapper facts left_column">              
-                      {
-                          personDetails?.profile_path && (
-                              <img style={{ maxWidth: "100%" }} src={`https://image.tmdb.org/t/p/w342/${personDetails.profile_path}`}  alt={personDetails.name} />
-                          )
-                      }
-
-
-          
-                      <div className="social_links">
-                        { personSocialsData && personSocialsData.facebook_id &&
-                              (
-                                  <div className="facebook">
-                                      <Link className="bg-gray me-2 " href={`https://facebook.com/${personSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link>                              
+        {
+            isPageLoading && (
+                            <div className='position-relative w-100'>
+                                <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                    
+                                </Spinner>
                                 </div>
-                                )
-                        }
+                            </div>
+            )
+        }
 
-                        { personSocialsData && personSocialsData.twitter_id &&
-                              (
-                                  <div className="facebook">
-                                      <Link className="bg-gray me-2 " href={`https://twitter.com/${personSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link>                              
-                                </div>
-                                )
-                        }
-
-                        { personSocialsData && personSocialsData.instagram_id &&
-                              (
-                                  <div className="facebook">
-                                      <Link className="bg-gray me-2 " href={`https://instagram.com/${personSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link>                              
-                                </div>
-                                )
-                        }
-
-                        { personDetails && personDetails.homepage &&
-                              (
-                                  <div className="facebook">
-                                      <Link className="bg-gray me-2 " href={`${personDetails.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link>                              
-                                </div>
-                                )
-                        }
+        {
+            !isPageLoading && (
+            <>
+                <div className='container my-2'>
+                    <div className='row'>
+                        <h1 className='text-1xl font-bold mb-4'>Overview Person</h1>
                     </div>
-                    <h3><b>Personal Info</b></h3>
-
-                    <section>
-                      <p><strong>Known For</strong></p><p> {personDetails?.known_for_department}</p>
-                      <p><strong>Known Credits</strong></p><p>{personDetails?.popularity}</p>
-                      <p><strong>Gender</strong></p><p> {personDetails && personDetails.gender && personDetails.gender === 1? 'Female': 'Male'} </p>
-                      <p className="full">
-                        <strong>Birthday</strong></p><p>
-                          {personDetails?.birthday}
-                      </p>
-                      <p className="full"><strong>Place of Birth</strong></p><p> {personDetails?.place_of_birth}</p>
-
-                        <p className="full true">
-                          <strong>Also Known As</strong></p><p>
-                        </p>
-                        <ul>
-                          {
-                              personDetails && personDetails.also_known_as.length > 0 && personDetails.also_known_as.map((known,index) => {
-                                  return (
-                                    <li key={`${known}_${index}`} className="additionalName">{known}</li>
-                                  )
-                              })
-                          }            
-                        </ul>
-                    </section>
-
-      
-
-    
-
-    
-                  </section>
                 </div>
-
+                
+                <div className="my-2">
+                    <div className='container my-2 py-2'>
+                    <div className='personDetails row'>
+                        <div className='col-md-3'> 
+                        <section className="full_wrapper facts left_column">              
+                            {
+                                personDetails?.profile_path && (
+                                    <img style={{ maxWidth: "100%" }} src={`https://image.tmdb.org/t/p/w342/${personDetails.profile_path}`}  alt={personDetails.name} />
+                                )
+                            }
 
 
                 
-                <div className='personDetailspage col-md-9'>
-                    <section className="">
-                        <div className="title">
+                            <div className="social_links d-flex row-flex my-4">
+                                { personSocialsData && personSocialsData.facebook_id &&
+                                    (
+                                        <div className="facebook">
+                                            <Link className="bg-gray me-2 " href={`https://facebook.com/${personSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link>                              
+                                        </div>
+                                        )
+                                }
 
-                          <h2 className="title">
-                          <a href="#">{personDetails?.name}</a>
-                          </h2>
+                                { personSocialsData && personSocialsData.twitter_id &&
+                                    (
+                                        <div className="facebook">
+                                            <Link className="bg-gray me-2 " href={`https://twitter.com/${personSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link>                              
+                                        </div>
+                                        )
+                                }
 
-                          {/* <div className="facts">
-                              <span className="release me-1">
-                              { personDetails?.release_date.replace(/-/g, '/')}
-                              </span>
+                                { personSocialsData && personSocialsData.instagram_id &&
+                                    (
+                                        <div className="facebook">
+                                            <Link className="bg-gray me-2 " href={`https://instagram.com/${personSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link>                              
+                                        </div>
+                                        )
+                                }
 
+                                { personDetails && personDetails.homepage &&
+                                    (
+                                        <div className="facebook">
+                                            <Link className="bg-gray me-2 " href={`${personDetails.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link>                              
+                                        </div>
+                                        )
+                                }
+                            </div>
+                            <h3><b>Personal Info</b></h3>
 
-                              <span className="genres">
-                                  {
-                                      personDetails && personDetails.genres && personDetails.genres.map((genre: any) =>{
-                                          return (
-                                              <a href={`/genre/${genre.id}`} title={genre.name}>{genre.name}, </a>
-                                          )
-                                      })
-                                  }
-                              </span>
+                            <section>
+                            <p><strong>Known For</strong></p><p> {personDetails?.known_for_department}</p>
+                            <p><strong>Known Credits</strong></p><p>{personDetails?.popularity}</p>
+                            <p><strong>Gender</strong></p><p> {personDetails && personDetails.gender && personDetails.gender === 1? 'Female': 'Male'} </p>
+                            <p className="full">
+                                <strong>Birthday</strong></p><p>
+                                {personDetails?.birthday}
+                            </p>
+                            <p className="full"><strong>Place of Birth</strong></p><p> {personDetails?.place_of_birth}</p>
 
-                              <span className="runtime">{ `${runningMovieTimeHours}h ${runningMovieTimeMinutes}m`}</span>
-                          </div> */}
+                                <p className="full true">
+                                <strong>Also Known As</strong></p><p>
+                                </p>
+                                <ul>
+                                {
+                                    personDetails && personDetails.also_known_as.length > 0 && personDetails.also_known_as.map((known,index) => {
+                                        return (
+                                            <li key={`${known}_${index}`} className="additionalName">{known}</li>
+                                        )
+                                    })
+                                }            
+                                </ul>
+                            </section>
+
+            
+
+            
+
+            
+                        </section>
                         </div>
-                        <div className="biography">                          
-                                    <h3 className="h4">Biography</h3>
-                                    <div className="overview">
-                                        <p>{personDetails && personDetails.biography}</p>
-                                    </div>
-                        </div>
-                                
-                      <div className='popularmoviespages row row-cols-4'>
+
+
+
                         
-                          {
-                            movieCreditKnownDetails && setMovieCreditKnownDetails.length > 0 && movieCreditKnownDetails.map((movie:any,index) => {
-                                  return (                                    
-                                      <MovieCard
-                                        key={`movie_${movie.id}`} 
-                                        id={movie.id}
-                                        poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
-                                        title={movie.title}
-                                        releaseYear={movie.release_date}
-                                        rating={movie.vote_average}
-                                        index={index}
+                        <div className='personDetailspage col-md-9'>
+                            <section className="">
+                                <div className="title">
+
+                                <h2 className="title">
+                                <a href="#">{personDetails?.name}</a>
+                                </h2>                                
+                                </div>
+                                <div className="biography">                          
+                                            <h3 className="h4">Biography</h3>
+                                            <div className="overview">
+                                                <p>{personDetails && personDetails.biography}</p>
+                                            </div>
+                                </div>
                                         
-                                      />
-                                  )
-                              })
-                          }            
+                            <div className='popularmoviespages row row-cols-4'>
+                                
+                                {
+                                    movieCreditKnownDetails && setMovieCreditKnownDetails.length > 0 && movieCreditKnownDetails.map((movie:any,index) => {
+                                        if(movie && (movie.poster_path != null || movie.poster_path != '') ){
+                                            return (                                    
+                                                <MovieCard
+                                                    key={`personmovie_${movie.id}_${index}`} 
+                                                    id={movie.id}
+                                                    poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
+                                                    title={movie.title}
+                                                    releaseYear={movie.release_date}
+                                                    rating={movie.vote_average}
+                                                    index={index}
+                                                    
+                                                />
+                                            )
+                                        }                                        
+                                    })
+                                }            
+                                
+                            </div>                                                                                                                                                        
+                            </section>
+                        </div> 
                         
-                      </div>                                                                                                                                                        
-                    </section>
-                </div> 
-                  
 
 
-                </div>
-              </div>
-          </div>        
+                        </div>
+                    </div>
+                </div>     
+            </>
+            )
+        }
+               
     </RootLayouts>
   )
 }

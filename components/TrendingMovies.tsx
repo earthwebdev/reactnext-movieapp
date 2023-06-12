@@ -10,7 +10,7 @@ const TrendingMovies = () => {
   const [movies, setMovies] = useState<MovieInterface[]>();
 
   const handleSelect = (selectedIndex: number) => {
-    console.log(selectedIndex, 'selected index value');
+    //console.log(selectedIndex, 'selected index value');
     setIndex(selectedIndex);
   };
   const fetchData =async () => {

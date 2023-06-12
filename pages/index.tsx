@@ -8,22 +8,36 @@ import TrendingMovies from '@/components/TrendingMovies'
 import PopularMovies from '@/components/PopularMovies'
 import HeroComp from '@/components/HeroComp'
 import PopularPeoples from '@/components/PopularPeoples'
+import { useState } from 'react'
 
 //const inter = Inter({ subsets: ['latin'] })
 
-
+import { Spinner } from "react-bootstrap";
 
 export default function Home() {
+  const [isPageLoading, setIsPageLoading] = useState(true);
   return (
     <>
     <RootLayouts>
-        
-          <HeroComp />
+    {
+            isPageLoading && (
+                            <div className='position-relative w-100'>
+                                <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                    
+                                </Spinner>
+                                </div>
+                            </div>
+            )
+        }        
           
-          <TrendingMovies />
-          <PopularMovies />
+                <HeroComp />
+                
+                <TrendingMovies />
+                <PopularMovies />
 
-          <PopularPeoples />
+                <PopularPeoples setIsPageLoading={setIsPageLoading } />              
       </RootLayouts>
     </>
   )

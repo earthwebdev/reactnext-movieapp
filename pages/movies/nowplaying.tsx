@@ -11,6 +11,7 @@ import { Spinner } from 'react-bootstrap';
 
 
 const nowPlayingPage = () => {
+    const [isPageLoading, setIsPageLoading] = useState(true);
     const [movies, setMovies] = useState<MovieInterface[]>([]);
     //for the spinner use state
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,64 +64,82 @@ const nowPlayingPage = () => {
           const resp = await fetchMoviesByParamsData({now_playing: 'now_playing', page});
           //console.log(resp);
           setMovies(resp.results);
+          setIsPageLoading(false);
     }
     useEffect(() => {
         fetchData();
     }, [])
   return (
     <RootLayouts>
-        
-        <div className='container my-2'>
-          <div className='row'>
-          <h1 className='text-1xl font-bold mb-4'>Upcoming Movies</h1>
-            
-            <div className='nowPlaying row'>
-                <div className='col-md-3'>
-                    <FilterMoviesAside sortFiltervalue={sortFiltervalue} setSortFiltervalue={setSortFiltervalue} />
-                    <FilterLists setSearchKeyword={setSearchKeyword} searchKeyword={searchKeyword} genreId={genreId} setGenreId={setGenreId} />
-                    <Button onClick={(e) => searchResults(e)} className='w-full mt-2 w-100' variant='secondary'>Search</Button>
-                </div>
-                <div className='nowPlayingPages row row row-cols-4 col-md-9'>
-                    {
-                        isLoading && (
-                                      <div className='position-relative w-100'>
-                                          <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
-                                            <Spinner animation="border" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                              
-                                            </Spinner>
-                                          </div>
-                                      </div>
-                        )
-                    }
-                      
-                  {
-                      !isLoading && movies && movies.map((movie: any, index: number) => {
-                          return <MovieCard
-                          key={movie.id} 
-                          id={movie.id}
-                          poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
-                          title={movie.title}
-                          releaseYear={movie.release_date}
-                          rating={movie.vote_average}
-                          index={index}
-                          
-                        />
-                      })
-                  }
+        {
+            isPageLoading && (
+                            <div className='position-relative w-100'>
+                                <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                    
+                                </Spinner>
+                                </div>
+                            </div>
+            )
+        }
+        {
+            !isPageLoading && (
+              <>
+                  <div className='container my-2'>
+                      <div className='row'>
+                      <h1 className='text-1xl font-bold mb-4'>Upcoming Movies</h1>
+                        
+                        <div className='nowPlaying row'>
+                            <div className='col-md-3'>
+                                <FilterMoviesAside sortFiltervalue={sortFiltervalue} setSortFiltervalue={setSortFiltervalue} />
+                                <FilterLists setSearchKeyword={setSearchKeyword} searchKeyword={searchKeyword} genreId={genreId} setGenreId={setGenreId} />
+                                <Button onClick={(e) => searchResults(e)} className='w-full mt-2 w-100' variant='secondary'>Search</Button>
+                            </div>
+                            <div className='nowPlayingPages row row row-cols-4 col-md-9'>
+                                {
+                                    isLoading && (
+                                                  <div className='position-relative w-100'>
+                                                      <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                                        <Spinner animation="border" role="status">
+                                                            <span className="visually-hidden">Loading...</span>
+                                                          
+                                                        </Spinner>
+                                                      </div>
+                                                  </div>
+                                    )
+                                }
+                                  
+                              {
+                                  !isLoading && movies && movies.map((movie: any, index: number) => {
+                                      return <MovieCard
+                                      key={movie.id} 
+                                      id={movie.id}
+                                      poster={movie.poster_path != null ?'https://image.tmdb.org/t/p/w342/'+ movie.poster_path:''} 
+                                      title={movie.title}
+                                      releaseYear={movie.release_date}
+                                      rating={movie.vote_average}
+                                      index={index}
+                                      
+                                    />
+                                  })
+                              }
 
-                  {
-                      !isLoading && movies && (
-                        <Button onClick={(e) => loadMorePages(e)} className='w-full mt-2 w-100' variant='secondary'>Load More</Button>
-                      )
-                  }
-                 </div> 
-                  
+                              {
+                                  !isLoading && movies && (
+                                    <Button onClick={(e) => loadMorePages(e)} className='w-full mt-2 w-100' variant='secondary'>Load More</Button>
+                                  )
+                              }
+                            </div> 
+                              
 
 
-                </div>
-              </div>
-          </div>        
+                            </div>
+                          </div>
+                      </div> 
+              </>
+            )
+        }                       
     </RootLayouts>
   )
 }

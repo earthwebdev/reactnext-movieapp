@@ -12,7 +12,7 @@ const FilterLists = (props: any) => {
 
   const fetchData = async () => {
     const resp = await fetchGenreMoviesList();
-      console.log(resp);
+      //console.log(resp);
       setGenreList(resp.genres);
   }
   useEffect(() => {

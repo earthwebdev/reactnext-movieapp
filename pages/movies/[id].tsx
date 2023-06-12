@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MovieInterface, MovieDetailsInterface, MovieCreditCastDetailsInterface, MovieCreditCrewDetailsInterface, MovieSocialDataInterface } from "@/interface/movieinterface";
 import RootLayouts from "@/components/Layouts";
 import Link  from 'next/link'
-import { Carousel } from "react-bootstrap";
+import { Carousel, Spinner } from "react-bootstrap";
 import { Facebook, Twitter, Instagram, Wikipedia, Link as LinkIcon } from "react-bootstrap-icons";
 import RecommendationsMoviesComp from "@/components/RecommendationMovies";
 
@@ -18,6 +18,7 @@ const MoviesDetailsPage = () => {
 
     const [movieRecommendationsData, setMovieRecommendationsData] = useState<MovieInterface>();
 
+    const [isPageLoading, setIsPageLoading] = useState(true);
     
 
     const [index, setIndex] = useState<number>(0);
@@ -62,10 +63,12 @@ const MoviesDetailsPage = () => {
                 //console.log(movieSocialsData);
                 const data:any = [];
                 //console.log(movieRecommendationsData);
-                setMovieRecommendationsData( data );
-                fetchRecommendationMoviesById();            
+                //setMovieRecommendationsData( data );
+                fetchRecommendationMoviesById();
+                setIsPageLoading(false);
         }
         else{
+            setIsPageLoading(false);
             router.push('/pagenotfound');
             return;
         }
@@ -111,221 +114,239 @@ const MoviesDetailsPage = () => {
             id, fetchType: '/recommendations',
         }        
         const resp: any = await fetchMoviesDetailsByParamsData(data);
-        //console.log(resp.results);
-        setMovieRecommendationsData( resp.results );
+        //console.log(resp.results.length);
+        setMovieRecommendationsData( resp?.results );
         
     }
     
     //console.log(movieDetails?.poster_path);
     useEffect(() => {
-        fetchDataById();        
-        
+        setIsPageLoading(true);
+        fetchDataById();                
     }, [id]); 
   return (
-    <RootLayouts>
-        <div className='container my-2'>
-            <div className='row'>
-                <h1 className='text-1xl font-bold mb-4'>Overview Movie</h1>
-            </div>
-        </div>
-        
-        <div className="bg-secondary bg-gradient">
-            <div className='container my-2 py-2'>
-            <div className='moviedetails row'>
-                <div className='col-md-3'>                
-                    {
-                        movieDetails?.poster_path && (
-                            <img style={{ maxWidth: "100%" }} src={`https://image.tmdb.org/t/p/w342/${movieDetails.poster_path}`}  alt={movieDetails.title} />
-                        )
-                    }                    
-                </div>
-                <div className='moviedetailspage col-md-9'>
-                    <section className="header poster">
-                        <div className="title ott_false" dir="auto">
-
-                        <h2 className="20">
-                        <a href="#">{movieDetails?.title}</a>
-                        <span className="tag release_date me-0">({releaseYear && releaseYear.split("-")[0]})</span>
-                        </h2>
-
-                        <div className="facts">
-                            {/* <span className="certification">
-                                R
-                            </span> */}
-
-                            <span className="release me-1">
-                            { movieDetails?.release_date.replace(/-/g, '/')}
-                            </span>
-
-
-                            <span className="genres">
-                                {
-                                    movieDetails && movieDetails.genres && movieDetails.genres.map((genre: any) =>{
-                                        return (
-                                            <a href={`/genre/${genre.id}`} title={genre.name}>{genre.name}, </a>
-                                        )
-                                    })
-                                }
-                            </span>
-
-                            <span className="runtime">{ `${runningMovieTimeHours}h ${runningMovieTimeMinutes}m`}</span>
-                        </div>
-
-
-                    </div>
-
-
-                            <ul className="auto actions d-flex">
-
-                                <li className="chart d-flex">
-                                    <div className="text-white">Average: <strong>{movieDetails && movieDetails.vote_average}</strong> </div>
-                                    <div className="text-white">Count: <strong>{movieDetails && movieDetails.vote_count}</strong> </div>                    
-                                    <div className="text-white">Popularity: <strong>{movieDetails && movieDetails.popularity}</strong> </div>                    
+    <RootLayouts>        
+        {
+            isPageLoading && (
+                            <div className='position-relative w-100'>
+                                <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
                                     
-                                </li>
-
-                                <li className="text-white" title="Imdb Url">
-                                <a target="_blank" className="text-white" href={movieDetails && `https://www.imdb.com/title/${movieDetails.imdb_id}`}>Click to check IMDB Site</a>
-                                </li>
-
-                                <li className="video none">
-                                    <a className="no_click play_trailer" href="#" data-site="YouTube" data-id="yjRHZEUamCc" data-title="Play Trailer"><span className="glyphicons_v2 play"></span> Play Trailer</a>
-                                </li>
-                            </ul>
-
-                            <div className="header_info">
-                                    {movieDetails && movieDetails.tagline && (<h3 className="tagline" dir="auto">{movieDetails.tagline}</h3>)}
-                                    <h3 dir="auto">Overview</h3>
-                                    <div className="overview" dir="auto">
-                                        <p>{movieDetails && movieDetails.overview}</p>
-                                    </div>
-
-                                <ol className="people no_image row row-cols-4">
-                                    {
-                                        movieCreditCrewDetails && movieCreditCrewDetails.map( (movieCreditCrewDetail: any, index) => {
-                                            return (
-                                                
-                                                        <li key={`crewmovies_${movieCreditCrewDetail.id}_${index}`} className="profile">
-                                                            <p className="mb-0">
-                                                                <Link className="text-white" href={`/person/${movieCreditCrewDetail.id}`}>{movieCreditCrewDetail.name}</Link>
-                                                            </p>
-                                                        <p className="character mb-1">{movieCreditCrewDetail.job}</p>
-                                                        </li>
-                                                    
-                                                
-                                                
-                                            )
-                                        })
-                                    }                                    
-                                </ol>
+                                </Spinner>
+                                </div>
                             </div>
-                    </section>
-                </div> 
-                  
-
-
+            )
+        }
+        {
+            ! isPageLoading && (
+                <>
+                <div className='container my-2'>
+                    <div className='row'>
+                        <h1 className='text-1xl font-bold mb-4'>Overview Movie</h1>
+                    </div>
                 </div>
-              </div>
-          </div>
-
-        <div className='container my-2 py-2'>
-            <div className='moviedetails row'>
-                <div className="col-md-9">
-                    <section className="topbilledcast">
-                        <h4>Top Billed Cast</h4>
-                        <div className="tbcastcarousel">
-                        <Carousel  activeIndex={index} onSelect={handleSelect}>
+                
+                <div className="bg-secondary bg-gradient">
+                    <div className='container my-2 py-2'>
+                    <div className='moviedetails row'>
+                        <div className='col-md-3'>                
                             {
-                                movieCreditCastDetails && movieCreditCastDetails.map((movie: any, ind: number) => {                                                                                
-                                            {
-                                                //console.log(movie.profile_path, 'movie path')
-                                                movie.profile_path  && movie.profile_path !== null
-                                                {
-                                                        return  (
-                                                            <Carousel.Item key={ind} interval={5000}>
-                                                                <img 
-                                                                className="d-block w-100"
-                                                                src={'https://image.tmdb.org/t/p/original/'+ movie.profile_path}
-                                                                alt={movie.name}
-                                                                />
-                                                                <Carousel.Caption className="text-danger-50 ">
-                                                                    <h3>{movie.name}</h3>
-                                                                    <p>{movie.character}</p>
-                                                                </Carousel.Caption>
-                                                            </Carousel.Item> 
-                                                        )
-                                                }                                                                                                         
-                                            }                                                                                                                                                                                                                
-                                })
-                            }                
-                        </Carousel>
+                                movieDetails?.poster_path && (
+                                    <img style={{ maxWidth: "100%" }} src={`https://image.tmdb.org/t/p/w342/${movieDetails.poster_path}`}  alt={movieDetails.title} />
+                                )
+                            }                    
                         </div>
-                    </section>
+                        <div className='moviedetailspage col-md-9'>
+                            <section className="header poster">
+                                <div className="title ott_false" dir="auto">
 
+                                <h2 className="20">
+                                <a href="#">{movieDetails?.title}</a>
+                                <span className="tag release_date me-0">({releaseYear && releaseYear.split("-")[0]})</span>
+                                </h2>
+
+                                <div className="facts">
+                                    {/* <span className="certification">
+                                        R
+                                    </span> */}
+
+                                    <span className="release me-1">
+                                    { movieDetails?.release_date.replace(/-/g, '/')}
+                                    </span>
+
+
+                                    <span className="genres">
+                                        {
+                                            movieDetails && movieDetails.genres && movieDetails.genres.map((genre: any) =>{
+                                                return (
+                                                    <a href={`/genre/${genre.id}`} title={genre.name}>{genre.name}, </a>
+                                                )
+                                            })
+                                        }
+                                    </span>
+
+                                    <span className="runtime">{ `${runningMovieTimeHours}h ${runningMovieTimeMinutes}m`}</span>
+                                </div>
+
+
+                            </div>
+
+
+                                    <ul className="auto actions d-flex">
+
+                                        <li className="chart d-flex">
+                                            <div className="text-white">Average: <strong>{movieDetails && movieDetails.vote_average}</strong> </div>
+                                            <div className="text-white">Count: <strong>{movieDetails && movieDetails.vote_count}</strong> </div>                    
+                                            <div className="text-white">Popularity: <strong>{movieDetails && movieDetails.popularity}</strong> </div>                    
+                                            
+                                        </li>
+
+                                        <li className="text-white" title="Imdb Url">
+                                        <a target="_blank" className="text-white" href={movieDetails && `https://www.imdb.com/title/${movieDetails.imdb_id}`}>Click to check IMDB Site</a>
+                                        </li>
+
+                                        <li className="video none">
+                                            <a className="no_click play_trailer" href="#" data-site="YouTube" data-id="yjRHZEUamCc" data-title="Play Trailer"><span className="glyphicons_v2 play"></span> Play Trailer</a>
+                                        </li>
+                                    </ul>
+
+                                    <div className="header_info">
+                                            {movieDetails && movieDetails.tagline && (<h3 className="tagline" dir="auto">{movieDetails.tagline}</h3>)}
+                                            <h3 dir="auto">Overview</h3>
+                                            <div className="overview" dir="auto">
+                                                <p>{movieDetails && movieDetails.overview}</p>
+                                            </div>
+
+                                        <ol className="people no_image row row-cols-4">
+                                            {
+                                                movieCreditCrewDetails && movieCreditCrewDetails.map( (movieCreditCrewDetail: any, index) => {
+                                                    return (
+                                                        
+                                                                <li key={`crewmovies_${movieCreditCrewDetail.id}_${index}`} className="profile">
+                                                                    <p className="mb-0">
+                                                                        <Link className="text-white" href={`/person/${movieCreditCrewDetail.id}`}>{movieCreditCrewDetail.name}</Link>
+                                                                    </p>
+                                                                <p className="character mb-1">{movieCreditCrewDetail.job}</p>
+                                                                </li>
+                                                            
+                                                        
+                                                        
+                                                    )
+                                                })
+                                            }                                    
+                                        </ol>
+                                    </div>
+                            </section>
+                        </div> 
+                        
+
+
+                        </div>
+                    </div>
                 </div>
-                <div className="col-md-3">
-                    {
-                        movieSocialsData && (
-                            <ul className="d-flex flex-cols sociallinks">
-                                {
-                                    movieSocialsData && movieSocialsData.facebook_id && (
-                                        <li><Link className="bg-gray me-2 " href={`https://facebook.com/${movieSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link></li>
-                                    )
-                                }
 
-                                {
-                                    movieSocialsData && movieSocialsData.twitter_id && (
-                                        <li><Link className="bg-gray me-2 " href={`https://twitter.com/${movieSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link></li>
-                                    )
-                                }
-                                
-                                {
-                                    movieSocialsData && movieSocialsData.instagram_id && (
-                                        <li><Link className="bg-gray me-2" href={`https://instagram.com/${movieSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link></li>
-                                    )
-                                }
+                <div className='container my-2 py-2'>
+                    <div className='moviedetails row'>
+                        <div className="col-md-9">
+                            <section className="topbilledcast">
+                                <h4>Top Billed Cast</h4>
+                                <div className="tbcastcarousel">
+                                <Carousel  activeIndex={index} onSelect={handleSelect}>
+                                    {
+                                        movieCreditCastDetails && movieCreditCastDetails.map((movie: any, ind: number) => {                                                                                
+                                                    {
+                                                        //console.log(movie.profile_path, 'movie path')
+                                                        movie.profile_path  && movie.profile_path !== null
+                                                        {
+                                                                return  (
+                                                                    <Carousel.Item key={ind} interval={5000}>
+                                                                        <img 
+                                                                        className="d-block w-100"
+                                                                        src={'https://image.tmdb.org/t/p/original/'+ movie.profile_path}
+                                                                        alt={movie.name}
+                                                                        />
+                                                                        <Carousel.Caption className="text-danger-50 ">
+                                                                            <h3>{movie.name}</h3>
+                                                                            <p>{movie.character}</p>
+                                                                        </Carousel.Caption>
+                                                                    </Carousel.Item> 
+                                                                )
+                                                        }                                                                                                         
+                                                    }                                                                                                                                                                                                                
+                                        })
+                                    }                
+                                </Carousel>
+                                </div>
+                            </section>
 
-{
-                                    movieDetails && movieDetails.homepage && (
-                                        <li><Link className="bg-gray me-2" href={`${movieDetails?.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link></li>
-                                    )
-                                }
-                                
-                                
-                                
-                            </ul>
-                        )
-                    }
-                            
-                            <p>
-                                <strong><bdi>Status</bdi></strong></p><p> {movieDetails?.status}
-                            </p>
+                        </div>
+                        <div className="col-md-3">
+                            {
+                                movieSocialsData && (
+                                    <ul className="d-flex flex-cols sociallinks">
+                                        {
+                                            movieSocialsData && movieSocialsData.facebook_id && (
+                                                <li><Link className="bg-gray me-2 " href={`https://facebook.com/${movieSocialsData?.facebook_id}`}><Facebook className="text-black-50 fs-4" /></Link></li>
+                                            )
+                                        }
 
-                            <p>
-                                <strong><bdi>Original Language</bdi></strong></p><p> 
-                                {
-                                    movieDetails && movieDetails.production_countries.length > 0 && 
-                                    movieDetails.production_countries.map((country) => {                                        
-                                        return country.iso_3166_1.toLowerCase() === movieDetails.original_language ? country.name : movieDetails?.original_language
-                                    }) 
-                                }
-                            </p>
+                                        {
+                                            movieSocialsData && movieSocialsData.twitter_id && (
+                                                <li><Link className="bg-gray me-2 " href={`https://twitter.com/${movieSocialsData?.twitter_id}`}><Twitter className="text-black-50 fs-4" /></Link></li>
+                                            )
+                                        }
+                                        
+                                        {
+                                            movieSocialsData && movieSocialsData.instagram_id && (
+                                                <li><Link className="bg-gray me-2" href={`https://instagram.com/${movieSocialsData?.instagram_id}`}><Instagram className="text-black-50 fs-4" /></Link></li>
+                                            )
+                                        }
 
-                            <p>
-                                <strong><bdi>Budget</bdi></strong></p><p>${movieDetails?.budget}
-                            </p>
+        {
+                                            movieDetails && movieDetails.homepage && (
+                                                <li><Link className="bg-gray me-2" href={`${movieDetails?.homepage}`}><LinkIcon className="text-black-50 fs-4" /></Link></li>
+                                            )
+                                        }
+                                        
+                                        
+                                        
+                                    </ul>
+                                )
+                            }
+                                    
+                                    <p>
+                                        <strong><bdi>Status</bdi></strong></p><p> {movieDetails?.status}
+                                    </p>
 
-                            <p>
-                                <strong><bdi>Revenue</bdi></strong></p><p>${movieDetails?.revenue}
-                            </p>
-                                 
-                            
+                                    <p>
+                                        <strong><bdi>Original Language</bdi></strong></p><p> 
+                                        {
+                                            movieDetails && movieDetails.production_countries.length > 0 && 
+                                            movieDetails.production_countries.map((country) => {                                        
+                                                return country.iso_3166_1.toLowerCase() === movieDetails.original_language ? country.name : movieDetails?.original_language
+                                            }) 
+                                        }
+                                    </p>
+
+                                    <p>
+                                        <strong><bdi>Budget</bdi></strong></p><p>${movieDetails?.budget}
+                                    </p>
+
+                                    <p>
+                                        <strong><bdi>Revenue</bdi></strong></p><p>${movieDetails?.revenue}
+                                    </p>
+                                        
+                                    
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                </>
+            )
+        }        
         {
             
-            movieRecommendationsData &&  (
+            !isPageLoading && movieRecommendationsData &&   (
                 <RecommendationsMoviesComp recommendationsMovies={movieRecommendationsData} id={id} />
             )
         }

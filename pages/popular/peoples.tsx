@@ -11,6 +11,7 @@ import { PeopleInterface } from '@/interface/peopleinterface';
 
 
 const popularPeoplesPage = () => {
+    const [isPageLoading, setIsPageLoading] = useState(true);
     const [popularPeoples, setPopularPeoples] = useState<PeopleInterface[]>([]);
     //for the spinner use state
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,8 +32,9 @@ const popularPeoplesPage = () => {
     const fetchData =async () => {
           setPage(1);
           const resp = await fetchPopularPeoples( page );
-          console.log(resp);
+          //console.log(resp);
           setPopularPeoples(resp.results);
+          setIsPageLoading(false);
     }
     useEffect(() => {
         fetchData();
@@ -40,46 +42,65 @@ const popularPeoplesPage = () => {
     }, [])
   return (
     <RootLayouts>
+        {
+            isPageLoading && (
+                            <div className='position-relative w-100'>
+                                <div className='d-flex justify-content-center align-items-center w-100' style={{minHeight: '50vh'}}>
+                                <Spinner animation="border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                    
+                                </Spinner>
+                                </div>
+                            </div>
+            )
+        }
+        {
+            !isPageLoading && (
+              <>
+                    <div className='container my-2'>
+                      <div className='row'>
+                      <h1 className='text-1xl font-bold mb-4'>Popular Peoples</h1>
+                        
+                        <div className='popularPeoples row'>                
+                            <div className='popularPeoplesPage row row row-cols-4 col-md-12'>                      
+                              {
+                                  popularPeoples && popularPeoples.map((person: any, index: number) => {
+                                      return (
+                                        <PopularPersonCard key={`person_${person.id}`} id={person.id} name={person.name} profile_path={'https://image.tmdb.org/t/p/original'+ person.profile_path} known_for={person.known_for} index={index} />                            
+                                      )
+                                  })
+                              }
+
+                              {
+                                    isLoading && (
+                                                  <div className='position-relative w-100'>
+                                                      <div className='d-flex justify-content-center align-items-center w-100'>
+                                                        <Spinner animation="border" role="status">
+                                                            <span className="visually-hidden">Loading...</span>
+                                                          
+                                                        </Spinner>
+                                                      </div>
+                                                  </div>
+                                    )
+                                }
+
+                              {
+                                  !isLoading && popularPeoples && (
+                                    <Button onClick={(e) => loadMorePages(e)} className='w-full mt-2 w-100' variant='secondary'>Load More</Button>
+                                  )
+                              }
+                            </div> 
+                              
+
+
+                            </div>
+                          </div>
+                      </div> 
+              </>
+            )
+        }
         
-        <div className='container my-2'>
-          <div className='row'>
-          <h1 className='text-1xl font-bold mb-4'>Popular Peoples</h1>
-            
-            <div className='popularPeoples row'>                
-                <div className='popularPeoplesPage row row row-cols-4 col-md-12'>                      
-                  {
-                      popularPeoples && popularPeoples.map((person: any, index: number) => {
-                          return (
-                            <PopularPersonCard key={`person_${person.id}`} id={person.id} name={person.name} profile_path={'https://image.tmdb.org/t/p/original'+ person.profile_path} known_for={person.known_for} index={index} />                            
-                          )
-                      })
-                  }
-
-                  {
-                        isLoading && (
-                                      <div className='position-relative w-100'>
-                                          <div className='d-flex justify-content-center align-items-center w-100'>
-                                            <Spinner animation="border" role="status">
-                                                <span className="visually-hidden">Loading...</span>
-                                              
-                                            </Spinner>
-                                          </div>
-                                      </div>
-                        )
-                    }
-
-                  {
-                      !isLoading && popularPeoples && (
-                        <Button onClick={(e) => loadMorePages(e)} className='w-full mt-2 w-100' variant='secondary'>Load More</Button>
-                      )
-                  }
-                 </div> 
-                  
-
-
-                </div>
-              </div>
-          </div>        
+               
     </RootLayouts>
   )
 }
