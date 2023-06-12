@@ -16,6 +16,7 @@ import { Spinner } from "react-bootstrap";
 
 export default function Home() {
   const [isPageLoading, setIsPageLoading] = useState(true);
+
   return (
     <>
     <RootLayouts>

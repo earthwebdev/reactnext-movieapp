@@ -13,7 +13,7 @@ import { Button } from 'react-bootstrap';
 const MovieCard = ({id, title, poster, releaseYear, rating, index}: MovieCardInterface) => {
   //console.log(id, 'ids  ');
   return (
-      <div className='col-3 mb-2'>
+      <div key={`movies_${id}_${index}`} className='col-3 mb-2'>
           {poster != '' ?<Link href={  `/movies/${id}` } className='w-100'><img className='w-full img-fluid' alt={title} src={poster} /></Link>:''}
           <div className='px-6 py-4 text-white'>
               <div className='font-bold text-xl mb-2'>{title.length > 25? title.trim().slice(0,25) + '...' : title}</div>
